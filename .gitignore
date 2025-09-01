@@ -113,3 +113,6 @@ iisexpress/
 
 .DS_Store
 Thumbs.db
+
+# Ignore appsettings
+appsettings.Development.json
