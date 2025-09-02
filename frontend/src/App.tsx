@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { GrEdit } from "react-icons/gr";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 type TodoItem = {
   id: string;
@@ -9,6 +11,8 @@ type TodoItem = {
 function App() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [newTodo, setNewTodo] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editedTitle, setEditedTitle] = useState<string>("");
 
   const API_URL = "http://localhost:5006/api/todo";
 
@@ -33,11 +37,36 @@ function App() {
     }
   };
 
+  const editTodo = async (id: string, updatedTitle: string) => {
+    if (!updatedTitle.trim()) return;
+
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: updatedTitle }),
+    });
+
+    if (res.ok) {
+      fetchTodos();
+      setEditingId(null);
+      setEditedTitle("");
+    }
+  };
+
   const deleteTodo = async (id: string) => {
     await fetch(`${API_URL}/${id}`, {
       method: "DELETE",
     });
     fetchTodos();
+  };
+
+  const startEditing = (todo: TodoItem) => {
+    setEditingId(todo.id);
+    setEditedTitle(todo.title);
+  };
+
+  const saveEdit = (id: string) => {
+    editTodo(id, editedTitle);
   };
 
   useEffect(() => {
@@ -64,8 +93,32 @@ function App() {
         ) : (
           todos.map((todo) => (
             <li key={todo.id} className="todo-item">
-              <span>{todo.title}</span>
-              <button onClick={() => deleteTodo(todo.id)}>❌</button>
+              {editingId === todo.id ? (
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEdit(todo.id);
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <span>{todo.title}</span>
+              )}
+
+              <div>
+                {editingId === todo.id ? (
+                  <button onClick={() => saveEdit(todo.id)}>💾</button>
+                ) : (
+                  <button onClick={() => startEditing(todo)}>
+                    <GrEdit />
+                  </button>
+                )}
+                <button onClick={() => deleteTodo(todo.id)}>
+                  <FaRegTrashAlt />
+                </button>
+              </div>
             </li>
           ))
         )}
