@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 type TodoItem = {
   id: string;
@@ -8,9 +8,9 @@ type TodoItem = {
 
 function App() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [newTodo, setNewTodo] = useState('');
+  const [newTodo, setNewTodo] = useState("");
 
-  const API_URL = 'http://localhost:5006/api/todo';
+  const API_URL = "http://localhost:5006/api/todo";
 
   const fetchTodos = async () => {
     const res = await fetch(API_URL);
@@ -22,20 +22,20 @@ function App() {
     if (!newTodo.trim()) return;
 
     const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: newTodo, isCompleted: false }),
     });
 
     if (res.ok) {
-      setNewTodo('');
+      setNewTodo("");
       fetchTodos();
     }
   };
 
   const deleteTodo = async (id: string) => {
     await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     fetchTodos();
   };
@@ -45,32 +45,30 @@ function App() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 600, margin: '40px auto', padding: '0 16px' }}>
+    <div className="todo-container">
       <h1>📝 My Tasks</h1>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+      <div className="todo-input-group">
         <input
           type="text"
           placeholder="New Task..."
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
-          style={{ flex: 1, padding: '8px' }}
         />
         <button onClick={addTodo}>Add</button>
       </div>
 
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id} style={{ marginBottom: 10 }}>
-            <span>{todo.title}</span>
-            <button
-              onClick={() => deleteTodo(todo.id)}
-              style={{ marginLeft: 10 }}
-            >
-              ❌
-            </button>
-          </li>
-        ))}
+      <ul className="todo-list">
+        {todos.length === 0 ? (
+          <li className="empty-message">No tasks added yet.</li>
+        ) : (
+          todos.map((todo) => (
+            <li key={todo.id} className="todo-item">
+              <span>{todo.title}</span>
+              <button onClick={() => deleteTodo(todo.id)}>❌</button>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
