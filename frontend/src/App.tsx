@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GrEdit } from "react-icons/gr";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { BiSave } from "react-icons/bi";
 
 type TodoItem = {
   id: string;
@@ -109,13 +110,13 @@ function App() {
 
               <div>
                 {editingId === todo.id ? (
-                  <button onClick={() => saveEdit(todo.id)}>💾</button>
+                  <button onClick={() => saveEdit(todo.id)} className="save-btn"><BiSave /></button>
                 ) : (
-                  <button onClick={() => startEditing(todo)}>
+                  <button onClick={() => startEditing(todo)} className="edit-btn">
                     <GrEdit />
                   </button>
                 )}
-                <button onClick={() => deleteTodo(todo.id)}>
+                <button onClick={() => deleteTodo(todo.id)} className="delete-btn">
                   <FaRegTrashAlt />
                 </button>
               </div>

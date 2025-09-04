@@ -61,7 +61,15 @@ h1 {
   cursor: pointer;
 }
 
-.todo-item button:hover {
+.save-btn:hover {
+  color: blue;
+}
+
+.edit-btn:hover {
+  color: blue;
+}
+
+.delete-btn:hover {
   color: red;
 }
 

@@ -28,6 +28,9 @@ public class TodoService
     public async Task CreateAsync(TodoItem item) =>
         await _todos.InsertOneAsync(item);
 
+     public async Task UpdateAsync(string id, TodoItem updatedItem) =>
+        await _todos.ReplaceOneAsync(t => t.Id == id, updatedItem);
+
     public async Task DeleteAsync(string id) =>
         await _todos.DeleteOneAsync(t => t.Id == id);
 }

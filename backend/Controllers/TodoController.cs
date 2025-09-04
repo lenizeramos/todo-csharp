@@ -28,7 +28,19 @@ public class TodoController : ControllerBase
         await _todoService.CreateAsync(item);
         return CreatedAtAction(nameof(GetAll), new { id = item.Id }, item);
     }
-    
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(string id, TodoItem updatedItem)
+    {
+        var existing = await _todoService.GetByIdAsync(id);
+        if (existing == null)
+            return NotFound();
+
+        updatedItem.Id = id;
+        await _todoService.UpdateAsync(id, updatedItem);
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
